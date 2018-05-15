@@ -1,0 +1,166 @@
+﻿o,code,pheno_iri,issue_tracker,last_date,title,organism,comment
+bho,E,,,,,, 
+fbbt,E,,,,,,a few behaviours
+ontoad,E,,,,,,"a little bit of phenotyping, mostly disease and clinical stuff"
+oae,E,,,,,,adverse events
+aeo,E,,,,,,anatomical entities
+bspo,E,,,,,,anatomical entities
+fma,E,,,,,,anatomy
+ma,E,,,,,,anatomy
+mfmo,E,,,,,,anatomy
+plana,E,,,,,,anatomy
+uberon,E,,,,,,anatomy
+wbbt,E,,,,,,anatomy
+cl,E,,,,,,"anatomy, cells"
+poro,E,,,,,,"anatomy, cells"
+birnlex,E,,,,,,"anatomy, disease"
+po,E,,,,,,"anatomy, stage"
+xao,E,,,,,,"anatomy, stage"
+zfa,E,,,,,,"anatomy, stage"
+ehdaa2,E,,,,,,"anatomy, stage, cell"
+edam,E,,,,,,bioinformatics methods
+syn,E,,,,,,bionetworks
+hino,E,,,,,,"cells, organism"
+cseo,E,,,,,,cigarette smoking
+ncbitaxon,E,,,,,,classification of organisms
+cmo,E,,,,,,clinical measurements
+idobru,E,,,,,,"clinical symptoms, mutations"
+scto,E,,,,,,clinical upper level ontology
+duo,E,,,,,,data use
+cteno,E,,,,,,"developmental and anatomical stuff, no pheno"
+ddo,E,,,,,,diabetes symptoms
+mfomd,E,,,,,,disease
+ogmd,E,,,,,,disease disorders
+omim,E,,,,,,diseases
+mondo,E,,,,,,diseases and characteristics
+crisp,E,,,,,,"diseases, anatomy, events"
+mesh,E,,,,,,"diseases, genes, very little on phentype"
+clo,E,,,,,,"diseases, not direct phenotype"
+cco,E,,,,,,"diseases, proteins, cells"
+ncit,E,,,,,,"diseases, very minor tiny class hierarchy"
+pdro,E,,,,,,drug prescriptions
+pgxo,E,,,,,,drug prescriptions
+dideo,E,,,,,,drug/drug interactions
+apollo-sv,E,,,,,,"epidemiology, software"
+eco,E,,,,,,evidence
+xco,E,,,,,,experimental conditions
+mi,E,,,,,,experimentation
+ego,E,,,,,,"few assertions in root, no phenotype"
+bto,E,,,,,,"fluids, tissue, enzymes"
+foodon,E,,,,,,food preservation
+rexo,E,,,,,,gene expression
+gexo,E,,,,,,"gene expression, disease"
+gro,E,,,,,,"gene expression, processes"
+ogg,E,,,,,,genes
+ogi,E,,,,,,genetic interval
+ogsf,E,,,,,,genetic susceptibility
+rctv2,E,,,,,,has a lot of congenital anomalies.. Could count as phenotype/
+ohmi,E,,,,,,Host-Microbiome Interaction
+genepio,E,,,,,,"imports HP, only minor subclassing"
+adalab,E,,,,,,"labs, gene regulation"
+lifo,E,,,,,,life processes
+gene-cds,E,,,,,,lots of polymorphisms
+idomal,E,,,,,,malaria disease
+mmo,E,,,,,,measurement methods
+obi,E,,,,,,"methods, study design"
+mo,E,,,,,,microarray experiments
+omit,E,,,,,,microRNA experiments
+mpath,E,,,,,,mouse pathologies
+mmusdv,E,,,,,,mouse stages
+enm,E,,,,,,nanomaterial safety
+snmi,E,,,,,,nomenclature medicine
+pco,E,,,,,,"not that sure, but I don’t think this ontology is supposed to model phenotypes in any systematic way"
+ons,E,,,,,,nutrition
+ogms,E,,,,,,"ontology is about general medical science. Weirdly, it was originally called clinical phenotypes ontology"
+ohd,E,,,,,,"oral health, diseases"
+tto,E,,,,,,organism taxonomy
+peo,E,,,,,,parasite experiments
+pw,E,,,,,,pathways
+pr,E,,,,,,proteins
+ro,E,,,,,,relations
+so,E,,,,,,"sequence ontology, very minor phenotype stuff"
+sdo,E,,,,,,sleep
+swo,E,,,,,,software ontology
+sopharm,E,,,,,,"some minor phenotype stuff, but mostly pharmacogenomics"
+vdot,E,,,,,,"some minor phenotype stuff, but mostly viral diseases"
+orth,E,,,,,,"some very top level stuff in the root ontology, nothing phenotype"
+ms,E,,,,,,spectometry methods
+hsapdv,E,,,,,,stages
+olatdv,E,,,,,,Stages
+pdumdv,E,,,,,,stages
+zfs,E,,,,,,stages
+stato,E,,,,,,statistical methods
+sbo,E,,,,,,systems biology
+loinc,E,,,,,,"there are some gene mutations with phenotypes, but they are encoded in the labels."
+reto,E,,,,,,transcription
+dmto,E,,,,,,treatplans diabetes
+sio,E,,,,,,"upper ontology, but nothing really phenotype related"
+ovae,E,,,,,,vaccine adverse events
+vo,E,,,,,,"vaccine, minor phenotypng"
+vario,E,,,,,,variation
+geno,E,,,,,,very minor phenotyping
+bcgo,E,,,,,,
+ero,E,,,,,,
+exo,E,,,,,,
+fao,E,,,,,,
+flu,E,,,,,,
+gfvo,E,,,,,,
+hl7,E,,,,,,
+obib,E,,,,,,
+biomo,E,,,,,,
+bro,E,,,,,,"research, biomedical resources"
+caro,E,,,,,,anatomy
+sep,E,,,,,,experimental techniques
+phenomenet,PA,,,,,,
+upheno,PA,,,,,,
+oba,PM,,,,,,a little bit of behaviour
+aura,PM,,,,,,a little bit of top level phenotyping
+ontoneo,PM,,,,,,afaiks HP modelling
+doid,PM,,,,,,diseases
+eupath,PM,,,,,,handful of phenotypes
+bao,PM,,,,,,has cell phenotype ontology class
+ktao,PM,,,,,,"imports HP phenotypes, only minor subclassing, lots of cells and organisms"
+jerm,PM,,,,,,Minor phenotype modelling
+envo,PM,,,,,,"OMP, microbial and plant phenotype"
+ccont,PM,,,,,,phenotypes all from HP imported!
+chear,PM,,,,,,phenotypes from upheno and nbo
+spd,PM,,,,,,"spider anatomy, with a bit of behaviour"
+blm,PM,,,,,,
+gamuts,PO,http://www.w3.org/2002/07/owl#Thing,bioportal,21.11.2017,Radiology Gamuts Ontology,human,"almost no modelling, no real superclass"
+aro,PO,http://purl.obolibrary.org/obo/ARO_3004299,https://github.com/arpcard/aro,16.04.2018,Antibiotic Resistance Ontology,microbial,antimicrobial phenotypes
+adar,PO,http://purl.org/autism-ontology/1.0/autism-rules.owl#Autism_Phenotype,bioportal,07.04.2015,Autism DSM-ADI-R ontology,human,"autism related, phenotype largest group"
+go,PO,http://purl.obolibrary.org/obo/GO_0007610,https://github.com/geneontology/go-ontology,07.05.2018,Gene Ontology,all,behaviour modelling
+sibo,PO,http://purl.obolibrary.org/obo/SIBO_0000147,https://github.com/obophenotype/sibo,15.05.2015,Social Inset Behavior Ontology,insect,behaviour modelling
+nbo,PO,http://purl.obolibrary.org/obo/NBO_0000243,https://github.com/obo-behavior/behavior-ontology/,09.02.2018,Neuro Behavior Ontology,all,"behaviour, could be considered pp"
+phare,PO,http://www.stanford.edu/~coulet/phare.owl#Phenotype,bioportal,14.01.2011,Pharmacogenomic Relationships Ontology,human,bit broken looking phenotypes relevant to pharmacology
+scdo,PO,http://scdontology.h3abionet.org/ontology/SCDO_0000893,https://github.com/scdodev/scdo-ontology,22.11.2017,Sickle Cell Disease Ontology,human,disease ontology
+ctx,PO,http://www.owl-ontologies.com/OntologyXCT.owl#Phenotype,bioportal,30.04.2013,Cerebrotendinous Xanthomatosis Ontology,human,"findings, significant phenotype branch"
+bdo,PO,http://www.w3.org/2002/07/owl#Thing,bioportal,09.02.2012,Bone Dysplasia Ontology,human,"HP, PATO use, HP import"
+ordo,PO,http://www.orpha.net/ORDO/Orphanet_C001,bioportal,09.02.2018,Orphanet Rare Disease Ontology,human,"quite some subclasses on phenome, but mostly disease symptoms, diseases"
+efo,PO,http://www.ebi.ac.uk/efo/EFO_0000651,https://github.com/EBISPOT/efo,04.05.2018,Experimental Factor Ontology,all,"significant HP imports, but not much phenotype stuff else"
+ceph,PO,http://purl.obolibrary.org/obo/CEPH_0000300,https://github.com/obophenotype/cephalopod-ontology,14.06.2018,Cephalopod Ontology,cephalopod,"traits, not phenotypes"
+diab,PO,http://semanticscience.org/resource/SIO_010056,https://github.com/vasant32/DiabetesOntology,27.11.2015,BioMedBridges Diabetes Ontology,human,
+fbcv,PO,http://purl.obolibrary.org/obo/FBcv_0001347,https://github.com/FlyBase/flybase-controlled-vocabulary/,11.04.2018,FlyBase Controlled Vocabulary,fly,
+fypo,PO,http://purl.obolibrary.org/obo/FYPO_0000001,https://github.com/pombase/fypo,02.05.2018,Fission Yeast Phenotype Ontology,yeast,
+hord,PO,http://www.orpha.net/ORDO/Orphanet_C001,bioportal,08.02.2018,Holistic Ontology of Rare Diseases,human,
+asdpto,PP,http://cbmi.med.harvard.edu/asdphenotype#Class_301,bioportal,21.01.2014,Autism Spectrum Disorder Phenotype Ontology,human,"deeply broken modelling, like medical history being a subclass of phenotype"
+rpo,PP,http://www.semanticweb.org/ontologies/2012/5/Ontology1338526551855.owl#All,bioportal,13.08.2012,Resource of Asian Primary Immunodeficiency Diseases (RAPID) Phenotype Ontology,human,Disease phenotypes
+mpo,PP,http://purl.jp/bio/01/mpo#MPO_00000,bioportal,20.02.2014,Microbial Phenotype Ontology,microbial,microbial phenotypes
+atol,PP,http://opendata.inra.fr/ATOL/ATOL_0000002,bioportal,22.10.2014,Animal Trait Ontology for Livestock,livestock,"ontology is about traits, I assume traits and phenotypes are synonumous"
+apo,PP,http://purl.obolibrary.org/obo/APO_0000017,bioportal,24.03.2018,Ascomycete Phenotype Ontology,ascomycete,own qualifier hierarchy
+ppo,PP,http://purl.obolibrary.org/obo/PPO_0002000,https://github.com/PlantPhenoOntology/PPO,21.10.2017,Plant Phenology Ontology,plant,plant phenotypes
+spto,PP,http://www.w3.org/2002/07/owl#Thing,bioportal,16.10.2017,Solanaceae Phenotype Ontology,solanaceae,"Seems to be primarily about phenotype, but almost zero modelling going on"
+repo,PP,http://www.w3.org/2002/07/owl#Thing,bioportal,12.10.2011,Reproductive Trait and Phenotype Ontology,livestock,small phenotype ontology on reproduction
+to,PP,http://purl.obolibrary.org/obo/TO_0000387,https://github.com/Planteome/plant-trait-ontology,26.04.2018,Plant Trait Ontology,plant,"traits, not phenotypes"
+vt,PP,http://purl.obolibrary.org/obo/VT_0000001,https://github.com/AnimalGenome/vertebrate-trait-ontology,30.04.2018,Vertebrate Trait Ontology,vertebrate,"traits, not phenotypes"
+cmpo,PP,http://www.ebi.ac.uk/cmpo/CMPO_0000003,https://github.com/EBISPOT/CMPO,04.01.2018,Cellular microscopy phenotype ontology,all,
+ddpheno,PP,http://purl.obolibrary.org/obo/DDPHENO_0010000,bioportal,07.05.2018,Dictyostelium Discoideum Phenotype Ontology,slime-mould,
+flopo,PP,http://purl.obolibrary.org/obo/FLOPO_0000000,https://github.com/flora-phenotype-ontology/flopoontology,15.05.2016,Flora Phenotype Ontology,flora,
+hp,PP,http://purl.obolibrary.org/obo/HP_0000001,https://github.com/obophenotype/human-phenotype-ontology,07.05.2018,Human Phenotype Ontology,human,
+mp,PP,http://purl.obolibrary.org/obo/MP_0000001,https://github.com/obophenotype/mammalian-phenotype-ontology,26.04.2018,Mammalian Phenotype Ontology,mammal,
+omp,PP,http://purl.obolibrary.org/obo/OMP_0000000,https://github.com/microbialphenotypes/OMP-ontology,04.05.2018,Ontology of Microbial Phenotypes,microbial,
+wbphenotype,PP,http://purl.obolibrary.org/obo/WBPhenotype_0000886,https://github.com/obophenotype/upheno,16.04.2018,Worm Phenotype Ontology,c elegans,
+hom,PU,,,,,,homology
+uo,PU,,,,,,metrics for PATO
+micro,PU,,,,,,phenotypic qualities
+pato,PU,,,,,,

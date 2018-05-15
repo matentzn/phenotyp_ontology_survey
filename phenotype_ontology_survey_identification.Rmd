@@ -1,0 +1,808 @@
+---
+title: 'Phenotype Ontology Survey: Identification'
+author: "Nicolas Matentzoglu"
+date: "27/04/2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(jsonlite)
+library(knitr)
+library(yaml)
+library(stringr)
+library(plyr)
+library(urltools)
+library(data.table)
+library(stringdist)
+library(xtable)
+library(reshape2)
+library(ggplot2)
+
+bp_api="0798b515-1ad4-4585-a9b4-2b4ad0f44f5e"
+
+ols="https://www.ebi.ac.uk/ols/api/search?q=phenotype"
+ols_ontologies="https://www.ebi.ac.uk/ols/api/ontologies?size=400"
+bioportal="http://data.bioontology.org/search?q=phenotype&apikey="
+obo="http://obofoundry.org/registry/ontologies.yml"
+bp_dl_pre<-"http://data.bioontology.org/ontologies/"
+bp_dl_post<-"/download?apikey=0798b515-1ad4-4585-a9b4-2b4ad0f44f5e"
+
+bp_ont_rest<-"http://data.bioontology.org/ontologies_full?apikey=0798b515-1ad4-4585-a9b4-2b4ad0f44f5e"
+bp_rec_rest<-"http://data.bioontology.org/recommender?input=phenotype&apikey=0798b515-1ad4-4585-a9b4-2b4ad0f44f5e"
+
+surveyf<-"survey.csv"
+aberowlf<-"aberowl.csv"
+
+```
+
+```{r functions, cache=TRUE}
+k<-function(df) {
+  return(kable(df,digits = 2,row.names = FALSE))
+}
+
+xt<-function(df) {
+  print(xtable(df,digits = 2),include.rownames=FALSE)
+}
+
+get_csv<-function(identifier) {
+temp = paste("raw/",list.files("raw/",pattern=paste("data_",identifier,"_.*.csv",sep="")),sep="")
+temp = temp[file.size(temp) > 1]
+#data = lapply(temp, function(x) { return(read.csv(x,)) })
+#df<-do.call(rbind, data)
+
+l <- lapply(temp, fread, sep=",",stringsAsFactors = FALSE,header=TRUE)
+df <- rbindlist( l ,use.names = TRUE)
+
+
+if("o" %in% names(df)) {
+  df[,o:=gsub(".owl","",gsub("file:///ws/phenotyp_ontology_survey/pheno_ontologies/","",o))]
+}
+if("o1" %in% names(df)) {
+  df[,o1:=gsub(".owl","",gsub("file:///ws/phenotyp_ontology_survey/pheno_ontologies/","",o1))]
+}
+if("o2" %in% names(df)) {
+  df[,o2:=gsub(".owl","",gsub("file:///ws/phenotyp_ontology_survey/pheno_ontologies/","",o2))]
+}
+return(df)
+}
+
+processOBO <-function(x) {
+  pheno=grepl("phenotype",toString(x),ignore.case = TRUE)
+  id=x$id
+  purl="unknown"
+  if(!is.null(x[["ontology_purl"]])){
+    purl = x[["ontology_purl"]]
+  }
+  return(c(id,purl,pheno))
+}
+
+processBPRaw <-function(x) {
+  pheno=grepl("phenotype",toString(x),ignore.case = TRUE)
+  id=x$ontology$acronym
+  return(c(id,pheno))
+}
+processBPRec <-function(x) {
+  id=x$ontologies[[1]]$acronym
+  return(id)
+}
+
+get_alignments<-function(filter,df_labels,df_classes) {
+  df_l_f<-df_labels[grepl(filter,df_labels$label),]
+  df_lo<-merge(df_l_f,unique(df_classes[,c("o","iri")]),by="iri")
+  o<-unique(df_lo$o)
+  y<-data.frame(t(combn(o, 2)))
+  names(y)<-c("o1","o2")
+  i = 0
+  j = 0
+  
+  out = list()
+  ct=1
+  for(i in 1:nrow(y)) {
+    print(paste(i,"out of",nrow(y)))
+    row = y[i,]
+    o1 = row$o1
+    o2 = row$o2
+    entities = expand.grid(unique(df_lo[o==o1,]$iri),unique(df_lo[o==o2,]$iri))
+    
+    for(j in 1:nrow(entities)) {
+      row_e = entities[j,]
+      iri1 = row_e$Var1
+      iri2 = row_e$Var2
+      z = expand.grid(unique(df_lo[iri==iri1,]$label),unique(df_lo[iri==iri2,]$label))
+      z$o1<-o1
+      z$o2<-o2
+      z$iri1<-iri1
+      z$iri2<-iri2
+      setDT(z)
+      out[[ct]]<-z
+      ct <- ct+1
+    }
+  }
+  df_alignment<-rbindlist(out)
+  df_alignment[,Var1:=gsub("behaviour","behavior",tolower(Var1))]
+  df_alignment[,Var2:=gsub("behaviour","behavior",tolower(Var2))]
+  df_alignment[,jw:=stringdist(Var1,Var2,method="jw")]
+  df_alignment[,dl:=stringdist(Var1,Var2,method="dl")]
+  df_alignment[,lv:=stringdist(Var1,Var2,method="lv")]
+  df_alignment[,eq:=(Var1==Var2)]
+return(df_alignment)
+}
+jaccard<-function(v1,v2) {
+  u<-length(union(v1,v2))
+  if(u==0) {
+    return(0)
+  }
+  return(length(intersect(v1,v2))/u)
+}
+
+add_superclassimpact<-function(df) {
+   
+ct_sbcl_ic<-plyr::count(df[,.(o1,o2,c_super_id)])
+names(ct_sbcl_ic)<-c("o1","o2","c_super_id","ct_impact")
+df<-merge(df,ct_sbcl_ic,by=c("o1","o2","c_super_id"))
+return(df)
+}
+
+add_superclassimpact_all<-function(df_sbcl_b) {
+oc<-unique(df_sbcl_b[,.(o1,o2)])
+out<-list()
+for(i in 1:nrow(oc)) {
+  row <- oc[i,]
+  sbcl_cache<-df_sbcl_b[o1==row$o1&o2==row$o2,]
+  x<-add_superclassimpact(sbcl_cache)
+  out[[i]]<-x
+}
+df_sbcl_b<-rbindlist(out)
+out<-NULL  
+return(df_sbcl_b)
+}
+
+
+semantic_integration<-function(df,df_sbcl_b) {
+  os<-unique(df[,c("o1","o2")])
+  out<-list()
+  ct<-1
+  for(j in 1:nrow(os)) {
+    print(paste(j,"out of",nrow(os)))
+    oc <- os[j,]
+    df_sbcl_cache <- df_sbcl_b[o1==oc$o1&o2==oc$o2,]
+   
+    df_c<-df[o1==oc$o1&o2==oc$o2,]
+    for(i in 1:nrow(df_c)) {
+      row = df_c[i,]
+      
+      sbcl1 = df_sbcl_cache[entity==row$iri1,]
+      sbcl2 = df_sbcl_cache[entity==row$iri2,]
+      sup1_all<-sbcl1[,c_super_id]
+      sup2_all<-sbcl2[,c_super_id]
+      sup1_c<-sbcl1[gen==FALSE,c_super_id]
+      sup2_c<-sbcl2[gen==FALSE,c_super_id]
+      
+      inter_c=intersect(sup1_c,sup2_c)
+      inter_all=intersect(sup1_all,sup2_all)
+      sup1_all_int <- sbcl1[sbcl1$c_super_id %in% inter_all,]
+      sup2_all_int <- sbcl2[sbcl2$c_super_id %in% inter_all,]
+      sup1_c_int <- sbcl1[sbcl1$c_super_id %in% inter_c,]
+      sup2_c_int <- sbcl2[sbcl2$c_super_id %in% inter_c,]
+      sup_c_int<-rbind(sup1_c_int,sup2_c_int)
+      sup_all_int<-rbind(sup1_all_int,sup2_all_int)
+      sup_c_int<-unique(sup_c_int[,.(c_super_id,ct_impact)])
+      sup_all_int<-unique(sup_all_int[,.(c_super_id,ct_impact)])
+      df_c[i,jacc_all:=jaccard(sup1_all,sup2_all)]
+      df_c[i,jacc_c:=jaccard(sup1_c,sup2_c)]
+      df_c[i,sup_int_size_all:=length(intersect(sup1_all,sup2_all))]
+      df_c[i,sup_int_size_c:=length(intersect(sup1_c,sup2_c))]
+      df_c[i,ic_c:=sum(1/sup_c_int$ct_impact)]
+      df_c[i,ic_all:=sum(1/sup_all_int$ct_impact)]
+    }
+    out[[ct]]<-df_c
+    ct <- ct +1
+  }
+  o<-rbindlist(out,use.names = TRUE)
+  return(o)
+}
+
+```
+
+# Ontology Identification
+
+```{r ols, cache=TRUE}
+ols_raw <- fromJSON(ols, flatten = TRUE)
+ols_onts <- fromJSON(ols_ontologies, flatten = TRUE)
+#head(ols_raw)
+#class(ols_raw)
+ontologies<-ols_raw[["facet_counts"]][["facet_fields"]][["ontology_name"]]
+df<-data.frame(ct=ontologies[seq(2, length(ontologies), 2)],o=ontologies[seq(1, length(ontologies), 2)])
+df$ct<-as.integer(as.character(df$ct))
+dfo<-ols_onts[["_embedded"]][["ontologies"]][c("config.namespace","config.id","config.fileLocation")]
+names(dfo)<-c("o","olsurl","location")
+dfo$olsurl<-as.character(dfo$olsurl)
+
+df_ols<-merge(df[df$ct>0,],dfo,all.x = TRUE)
+
+df_ols$ols<-1
+df_ols$o<-gsub("-","",as.character(df_ols$o))
+df_ols$ct<-NULL
+
+print("first records ols")
+k(head(df_ols))
+```
+
+```{r obo, cache=TRUE}
+download.file(obo,"obo.yaml")
+obo_raw <- yaml.load_file("obo.yaml")
+#head(obo_raw)
+t<-unlist(lapply(obo_raw$ontologies,processOBO))
+df<-data.frame(pheno=t[seq(3, length(t), 3)],url=t[seq(2, length(t), 3)],o=t[seq(1, length(t), 3)])
+df$pheno<-as.logical(as.character(df$pheno))
+df$obourl<-as.character(df$url)
+df$url<-NULL
+df_obo<-df[df$pheno&df$obourl!="unknown",]
+df_obo$obo<-1
+df_obo$pheno<-NULL
+df_obo$o<-gsub("-","",as.character(df_obo$o))
+
+print("first records obo")
+k(head(df_obo))
+```
+
+```{r aberowl, cache=TRUE}
+df_ao<-read.csv(aberowlf,stringsAsFactors = FALSE)
+df_ao$aberowl_url<-ifelse(df_ao$aberowl_url=="",paste(bp_dl_pre,toupper(df_ao$o),bp_dl_post,sep=""),df_ao$aberowl_url)
+
+print("first records aberowl")
+k(head(df_ao))
+```
+
+```{r bioportal_download, cache=TRUE}
+
+bp_raw <- fromJSON(bp_ont_rest, flatten = FALSE, simplifyDataFrame = FALSE, simplifyVector = FALSE, simplifyMatrix = FALSE)
+bp_rec <- fromJSON(bp_rec_rest, flatten = FALSE, simplifyDataFrame = FALSE, simplifyVector = FALSE, simplifyMatrix = FALSE)
+```
+
+```{r bp_rec, cache=TRUE}
+t<-unlist(lapply(bp_rec,processBPRec))
+df<-data.frame(o=tolower(t))
+df_bprec<-df
+df_bprec$bprec<-1
+df_bprec$bprec_url<-paste(bp_dl_pre,toupper(df_bprec$o),bp_dl_post,sep="")
+df_bprec$o<-gsub("-","",as.character(df_bprec$o))
+
+print("first records BioPortal recommendations")
+k(head(df_bprec))
+```
+
+```{r bp_raw, cache=TRUE}
+t<-unlist(lapply(bp_raw,processBPRaw))
+df<-data.frame(pheno=t[seq(2, length(t), 2)],o=t[seq(1, length(t), 2)])
+df$pheno<-as.logical(as.character(df$pheno))
+df$o<-tolower(as.character(df$o))
+df_bpraw<-df[df$pheno,]
+df_bpraw$bpraw<-1
+df_bpraw$bpraw_url<-paste(bp_dl_pre,toupper(df_bpraw$o),bp_dl_post,sep="")
+df_bpraw$o<-gsub("-","",as.character(df_bpraw$o))
+df_bpraw$pheno<-NULL
+
+print("first records BioPortal ontology metadata")
+k(head(df_bpraw))
+```
+
+## Final Survey Data
+```{r merge, cache=TRUE}
+df_all<-merge(df_obo,df_ols,by="o",all = TRUE)
+df_all<-merge(df_all,df_bpraw,by="o",all = TRUE)
+df_all<-merge(df_all,df_bprec,by="o",all = TRUE)
+df_all<-merge(df_all,df_ao,by="o",all = TRUE)
+df_all$download<-ifelse(!is.na(df_all$location),df_all$location,
+                    ifelse(!is.na(df_all$obourl),df_all$obourl,
+                    ifelse(!is.na(df_all$olsurl),df_all$olsurl,
+                    ifelse(!is.na(df_all$bpraw_url),df_all$bpraw_url,  ifelse(!is.na(df_all$bprec_url),df_all$bprec_url,df_all$aberowl_url)))))
+
+download<-df_all[is.na(df_all$download),"o"]
+download
+
+df_final<-df_all[c("o","download","obo","ols","bpraw","bprec")]
+
+k(df_final)
+
+print("How many hits in eacht database?")
+dct<-melt(df_final,id.vars=c("o","download"))
+dct<-dct[!is.na(dct$value),]
+k(plyr::count(dct$variable))
+```
+
+# Collecting data
+## Downloading ontologies 
+```{r down, eval=FALSE}
+df_final$filename<-paste(df_final$o,".owl",sep = "")
+for(row in 1:nrow(df_final)) {
+ rec = df_final[row,]
+ filename = paste("download/",rec$filename,sep="")
+ #print(paste("Downloading: ",filename))
+ if(!file.exists(filename)) {
+      tryCatch({
+        print(filename)
+        print(rec$download)
+        #download.file(rec$download,filename)
+      }, warning = function(war) {
+        print(warning)
+      }, error = function(err) {
+        print(paste("MY_ERROR:  ",err))
+      }, finally = {
+        print("done...")
+      })
+ } else {
+    #print("Already downloaded")
+  }
+}
+df_final$download_success<-file.exists(filename)
+```
+
+## Loading survey data 
+
+
+```{r load_survey_coding}
+df_survey<-read.csv(surveyf,stringsAsFactors = FALSE)
+ct_codes<- plyr::count(df_survey$code)
+k(ct_codes)
+```
+
+
+```{r loadsurveydata}
+df_pheno<-df_survey[df_survey$code=="PO"|df_survey$code=="PP",]
+df_pheno$year<-sub('.*\\.', '', df_pheno$last_date)
+df_pheno<-df_pheno[with(df_pheno, order(code, o)),]
+plyr::count(df_survey$code)
+```
+
+```{r copyphenoonts}
+for(f in df_pheno$o) {
+  print(f)
+  # file.copy(paste("download/",f,".owl",sep=""),paste("pheno_ontologies/",f,".owl",sep="")) UNCOMMENTTHIS
+}
+```
+
+## Harvesting raw data from ontologies
+
+```{r harvestdata}
+for(i in 1:nrow(df_pheno)) {
+  rec = df_pheno[i,]
+  id = rec$o
+  pc = rec$pheno_iri
+  o = paste("file:///ws/phenotyp_ontology_survey/pheno_ontologies/",id,".owl",sep="")
+  out = "raw/"
+  cmd = paste("java -jar harvest.jar",o,pc,id,out)
+  exported = paste("raw/data_c_",id,".csv",sep="")
+  if(!file.exists(exported)) {
+    print(cmd)
+    system(cmd, intern = TRUE)
+  }
+}
+
+
+
+```
+
+## Loading Harvested Data
+
+```{r loadharvesteddata, cache=TRUE}
+df_classes_raw = get_csv("c")
+df_definitions_raw = get_csv("d")
+df_entities_raw = get_csv("e")
+df_labels = get_csv("l")
+df_sbcl_raw = get_csv("i")
+
+```
+
+### Filtering out subclasses of Thing
+
+```{r filtersbcl}
+df_sbcl = df_sbcl_raw[c_super!="http://www.w3.org/2002/07/owl#Thing",]
+
+df_sbcl[,c_super_id:=ifelse(df_sbcl$gen,label,c_super)]
+nrow(df_sbcl)
+plyr::count(df_sbcl[,gen])
+```
+
+### Filtering out classes with multiple definitions
+```{r definition_filter, cache=TRUE}
+x<-plyr::count(df_definitions_raw[,c("o","iri")])
+def_multipledef<-x[x$freq>1,]
+df_definitions<-merge(df_definitions_raw,def_multipledef,by=c("o","iri"),all = TRUE)
+df_definitionsmultiple = df_definitions[!is.na(freq),]
+df_definitions<-df_definitions[is.na(freq),]
+
+# Filtering from definition enities data
+x<-unique(df_definitionsmultiple[,c("o","id")])
+x$filter=TRUE
+df_entities<-merge(df_entities_raw,x,by=c("o","id"),all.x = TRUE)
+nrow(df_entities)
+df_entities<-df_entities[is.na(filter),]
+nrow(df_entities)
+
+# Filtering from classes
+x<-unique(df_definitionsmultiple[,c("o","iri")])
+x$filter=TRUE
+df_classes<-merge(df_classes_raw,x,by=c("o","iri"),all.x = TRUE)
+nrow(df_classes)
+df_classes<-df_classes[is.na(filter),]
+nrow(df_classes)
+```
+
+#### Excluded definitions
+```{r excluded_defs, cache=TRUE}
+print("Excluded defs: ")
+print(nrow(def_multipledef))
+df_definitionsmultiple$patternnolb<-str_replace_all(df_definitionsmultiple$pattern, "[\r\n]" , " ")
+k(df_definitionsmultiple[,c("iri","o","patternnolb")])
+k(plyr::count(df_definitionsmultiple$o))
+```
+
+
+# Basic Analysis: Phenotype Ontologies
+
+## Overview ontologies
+```{r}
+df_p<-df_pheno[,c("o","title","year")]
+df_p$o<-toupper(df_p$o)
+k(df_p)
+#xt(df_p)
+```
+
+## Phenotype classes by ontologies, including definition coverage
+```{r phenoclass}
+df_eq<-df_definitions[eq==TRUE,]
+nrow(df_eq)
+ct_class<-plyr::count(df_classes$o)
+
+# This works because I excluded the duplicates, otherwise I would have to use id as well
+df_def_c<-unique(df_definitions[,c("o","iri")])
+nrow(df_def_c)
+df_def_e<-unique(df_eq[,c("o","iri")])
+nrow(df_def_c)
+
+ct_def<-plyr::count(df_def_c$o)
+ct_def_e<-plyr::count(df_def_e$o)
+
+xx<-sort(as.character(unique(ct_class$o)))
+xxx<-sort(as.character(df_pheno$o))
+xx[!(xx %in% xxx),]
+xxx[!(xxx %in% xx),]
+
+ct_class<-merge(ct_class,ct_def,by="x",all = TRUE)
+ct_class<-merge(ct_class,ct_def_e,by="x",all = TRUE)
+names(ct_class)<-c("o","pheno_ct","def_ct","eq_ct")
+
+ct_class$o<-toupper(ct_class$o)
+ct_class$def_ct<-ifelse(is.na(ct_class$def_ct),0,ct_class$def_ct)
+ct_class$eq_ct<-ifelse(is.na(ct_class$eq_ct),0,ct_class$eq_ct)
+ct_class$p_def<-ct_class$def_ct/ct_class$pheno_ct
+ct_class$p_eq<-ct_class$eq_ct/ct_class$def_ct
+ct_class$p_eq<-ifelse(is.nan(ct_class$p_eq),0,ct_class$p_eq)
+ct_class<-ct_class[order(-ct_class$p_def),]
+k(ct_class[ct_class$def_ct>0,])
+xt(ct_class[ct_class$def_ct>0,])
+```
+
+### Ontologies sub-classed to
+```{r superc}
+df_super_uo<-unique(df_sbcl[,.(c_super,gen,o)])
+df_super_uo$entity<-gsub("^ttp","http",df_super_uo$c_super) #broken in fbcv, will probably be fixed soon. 
+df_super_uo<-df_super_uo[gen==FALSE,]
+df_super_uo[,gen:=NULL]
+df_super_uo$entity<-gsub("[()]","",df_super_uo$entity)
+df_super_uo$remainder<-fragment(df_super_uo$entity)
+df_super_uo$remainder<-ifelse(is.na(df_super_uo$remainder),basename(df_super_uo$entity),df_super_uo$remainder)
+df_super_uo$uo<-ifelse(grepl(pattern = "http://purl.obolibrary.org/obo/",df_super_uo$entity)&!grepl(pattern = "#",df_super_uo$entity),gsub( pattern = "_.*$", "", x=df_super_uo$remainder),str_replace_all(string = df_super_uo$entity, pattern=df_super_uo$remainder,replacement = ""))
+df_super_uo$uo<-ifelse(grepl(pattern = "http://purl.obolibrary.org/obo/",df_super_uo$uo)&grepl(pattern = "#",df_super_uo$entity),str_replace_all(string = df_super_uo$uo, pattern="http://purl.obolibrary.org/obo/",replacement = ""),df_super_uo$uo)
+df_super_uo$uo<-tolower(gsub("#$","",df_super_uo$uo))
+df_super_uo$uo<-gsub("http://www.ebi.ac.uk/","",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.ifomis.org/bfo/1.1/snap","bfo",df_super_uo$uo)
+
+df_super_uo$uo<-gsub("http://cbmi.med.harvard.edu/","",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://ncicb.nci.nih.gov/xml/owl/evs/thesaurus.owl","evs_thes",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://opendata.inra.fr/","",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://purl.bioontology.org/ontology/","",df_super_uo$uo)
+
+df_super_uo$uo<-gsub("http://purl.jp/bio/01/mpo","jmpo",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://purl.org/autism-ontology/1.0/autism-rules.owl","autism-rules",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://purl.org/skeletome/bonedysplasia","bonedysplasia",df_super_uo$uo)
+
+df_super_uo$uo<-gsub("http://scdontology.h3abionet.org/ontology","scdont",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://semanticscience.org/resource","semanticscience",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://sig.uw.edu/fma","fma",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.gamuts.net/entity","gamuts",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.ifomis.org/bfo/1.1","bfo",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.orpha.net/ordo","ordo",df_super_uo$uo)
+
+df_super_uo$uo<-gsub("http://www.owl-ontologies.com/ontologyxct.owl","ontologyxct",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.semanticweb.org/ontologies/2012/5/ontology1338526551855.owl","ooo",df_super_uo$uo)
+df_super_uo$uo<-gsub("http://www.stanford.edu/~coulet/phare.owl","phare",df_super_uo$uo)
+
+df_super_uo$uo<-gsub("/$","",df_super_uo$uo)
+x<-unique(df_super_uo[,.(o,uo)])
+x<-plyr::count(x[,uo])
+x<-x[order(-x$freq),]
+k(x[x$freq>1,])
+nrow(df_super_uo[uo %in% unique(as.character(x[x$freq>1,]$x)),])
+#head(df_super_uo[uo %in% unique(as.character(x[x$freq>1,]$x)),])
+
+xt(x[x$freq>1,])
+```
+
+## Extracting counts
+```{r}
+nr_unique_defs=length(unique(df_definitions$id))
+nr_unique_onts=length(unique(df_definitions$o))
+```
+
+# Basic Analysis: Definitions
+
+## Referenced upper ontologies
+```{r}
+# Excluding datatypes, references made from definitions alone
+df_sig<-df_entities[category=="signature"&type!="Datatype",]
+df_sig$entity<-gsub("^ttp","http",df_sig$entity) #broken in fbcv, will probably be fixed soon. 
+
+df_sig$remainder<-fragment(df_sig$entity)
+df_sig$remainder<-ifelse(is.na(df_sig$remainder),basename(df_sig$entity),df_sig$remainder)
+df_sig$uo<-ifelse(grepl(pattern = "http://purl.obolibrary.org/obo/",df_sig$entity)&!grepl(pattern = "#",df_sig$entity),gsub( pattern = "_.*$", "", x=df_sig$remainder),str_replace_all(string = df_sig$entity, pattern=df_sig$remainder,replacement = ""))
+
+df_sig$uo<-ifelse(grepl(pattern = "http://purl.obolibrary.org/obo/",df_sig$uo)&grepl(pattern = "#",df_sig$entity),str_replace_all(string = df_sig$uo, pattern="http://purl.obolibrary.org/obo/",replacement = ""),df_sig$uo)
+df_sig$uo<-tolower(gsub("#$","",df_sig$uo))
+df_sig$uo<-gsub("http://www.ebi.ac.uk/","",df_sig$uo)
+df_sig$uo<-gsub("http://www.ifomis.org/bfo/1.1/snap","bfo",df_sig$uo)
+df_sig$uo<-gsub("/$","",df_sig$uo)
+df_l<-df_labels[iri %in% unique(df_sig$entity),]
+
+# Just pick one label, if multiple are present:
+df_l<-df_l[!duplicated(iri),] 
+df_sig<-merge(df_sig,df_l[,c("iri","label")],by.x = "entity",by.y = "iri",all.x = TRUE)
+x<-unique(df_sig[,c("uo","id")])
+ct_uo<-plyr::count(x$uo)
+
+x<-unique(df_sig[,c("uo","o")])
+ct_uo_o<-plyr::count(x$uo)
+
+ct_uo<-merge(ct_uo,ct_uo_o,by="x",all=TRUE)
+names(ct_uo)<-c("o","def","used")
+ct_uo$pc_def<-ct_uo$def/nr_unique_defs
+ct_uo$pc_os<-ct_uo$used/nr_unique_onts
+names(ct_uo)<-c("Ref Ontology","Definitions","Used in Ontologies", "PC Def", "PC Used")
+ct_uo<-ct_uo[order(-ct_uo$Definitions),]
+ct_uo$`Ref Ontology`<-toupper(ct_uo$`Ref Ontology`)
+k(ct_uo)
+xt(ct_uo[ct_uo$`Used in Ontologies`>1,])
+```
+
+## Frequently used sub-expressions
+```{r classexpressions}
+#TODO
+df_clexp<-df_entities[category=="sub_expression",]
+df_clexp$entity<-gsub("_"," ",df_clexp$entity)
+df_clexp$entity<-gsub("[>]","x",df_clexp$entity)
+df_clexp$entity<-gsub("[<][=]","x",df_clexp$entity)
+df_clexp$signature<-str_replace_all(df_clexp$entity,pattern = "[^a-zA-Z0-9()]",replacement = "")
+df_clexp_o<-unique(df_clexp[,c("o","signature")])
+ct_df_clexp_o<-plyr::count(df_clexp_o[,"signature"])
+names(ct_df_clexp_o)<-c("signature","cto")
+ct_etype<-plyr::count(df_clexp[type!="Class",c("signature")])
+nrow(ct_etype)
+u<-unique(df_clexp[,c("signature","entity")])
+ct_etype<-merge(ct_etype,u,by="signature")
+ct_etype<-merge(ct_etype,ct_df_clexp_o,by="signature")
+ct_etype$grammar_p<-gsub("\n","",ct_etype$entity)
+ct_etype$grammar_p<-gsub("\\s+", " ", str_trim(ct_etype$grammar))
+nrow(ct_etype)
+ct_etype_d<-ct_etype[order(-ct_etype$freq),]
+ct_etype_o<-ct_etype[order(-ct_etype$cto),]
+k(head(ct_etype_d[,c("grammar_p","freq","cto")],20))
+k(head(ct_etype_o[,c("grammar_p","freq","cto")],20))
+```
+
+## Used OWL constructs
+```{r owllanguage}
+df_expu_d<-unique(df_clexp[,c("id","type")])
+df_expu_o<-unique(df_clexp[,c("o","type")])
+ct_expu_d<-plyr::count(df_expu_d[,"type"])
+ct_expu_o<-plyr::count(df_expu_o[,"type"])
+ct_expu<-merge(ct_expu_d,ct_expu_o,by="type",all=TRUE)
+names(ct_expu)<-c("Type","Defs","Onts")
+
+ct_expu$pc_d<-ct_expu$Defs/nr_unique_defs
+ct_expu$pc_o<-ct_expu$Onts/nr_unique_onts
+
+ct_expu<-ct_expu[order(-ct_expu$Defs),]
+k(ct_expu)
+xt(ct_expu)
+```
+
+## Used OWL constructs
+
+### Entities used often sorted by number of definitions
+```{r top20_entities}
+unique_o_remain<-unique(df_sig[,c("remainder","o","type","label")])
+ct_unique_o_remain<-plyr::count(unique_o_remain[,c("remainder","type","label")])
+ct_remainder<-plyr::count(df_sig[,c("remainder","type","label")])
+ct_remainder<-merge(ct_remainder,ct_unique_o_remain,by=c("remainder","type","label"),all.x = TRUE)
+names(ct_remainder)<-c("Entity","Type","Label","Definitions","Ontologies")
+
+ct_remainder$pc_d<-ct_remainder$Definitions/nr_unique_defs
+ct_remainder$pc_o<-ct_remainder$Ontologies/nr_unique_onts
+
+ct_remainder_d<-head(ct_remainder[order(-ct_remainder$Definitions),],10)
+ct_remainder_o<-head(ct_remainder[order(-ct_remainder$Ontologies),],10)
+k(ct_remainder_d)
+k(ct_remainder_o)
+xt(ct_remainder_d)
+xt(ct_remainder_o)
+```
+
+
+## Frequently used grammars
+```{r grammaranalysis}
+df_dd<-unique(df_definitions[,c("o","iri","grammar_sig","grammar")])
+df_dd_o<-unique(df_dd[,c("o","grammar_sig")])
+ct_df_dd_o<-plyr::count(df_dd_o[,"o"]) # How many different patterns by ontology?
+ct_df_dd_p<-plyr::count(df_dd_o[,"grammar_sig"]) # How many different patterns by ontology?
+df_dd$grammar<-gsub("_"," ",df_dd$grammar)
+df_dd$grammar<-gsub("[>]","x",df_dd$grammar)
+df_dd$grammar<-gsub("[<][=]","x",df_dd$grammar)
+ct_df_d<-plyr::count(df_dd$grammar_sig)
+grammars = unique(df_dd[,c("grammar_sig","grammar")])
+ct_df_d<-merge(ct_df_d,grammars,by.x="x",by.y="grammar_sig",all.x=TRUE)
+nrow(ct_df_d)
+nrow(ct_df_d)
+ct_df_d$grammar_p<-gsub("\n","",ct_df_d$grammar)
+ct_df_d$grammar_p<-gsub("\\s+", " ", str_trim(ct_df_d$grammar))
+ct_df_d<-merge(ct_df_d, ct_df_dd_p, by.x = "x", by.y = "grammar_sig")
+names(ct_df_d)<-c("pattern_sig","ctd","grammar","grammar_p","cto")
+nrow(ct_df_d)
+ct_df_d_ctd<-ct_df_d[order(-ct_df_d$ctd),]
+ct_df_d_cto<-ct_df_d[order(-ct_df_d$cto),]
+
+k(head(ct_df_d_ctd[c("grammar_p","ctd","cto")],20))
+xt(head(ct_df_d_ctd[c("grammar_p","ctd","cto")],20))
+k(head(ct_df_d_cto[c("grammar_p","ctd","cto")],20))
+k(ct_df_dd_o[order(-ct_df_dd_o$freq),])
+```
+
+# Alignment Analysis
+
+## Prepare co-subsumption
+```{r cusubsumption, eval=FALSE}
+o<-unique(df_pheno$o)
+y<-data.frame(t(combn(o, 2)))
+names(y)<-c("o1","o2")
+y<-merge(y,unique(df_pheno[c("o","pheno_iri")]),by.x = "o1",by.y = "o")
+y<-merge(y,unique(df_pheno[c("o","pheno_iri")]),by.x = "o2",by.y = "o")
+names(y)<-c("o2","o1","pheno_iri1","pheno_iri2")
+head(y,20)
+
+for(i in 1:nrow(y)) {
+  rec = y[i,]
+  id1 = rec$o1
+  id2 = rec$o2
+  pc1 = rec$pheno_iri1
+  pc2 = rec$pheno_iri2
+  o1 = paste("file:///ws/phenotyp_ontology_survey/pheno_ontologies/",id1,".owl",sep="")
+  o2 = paste("file:///ws/phenotyp_ontology_survey/pheno_ontologies/",id2,".owl",sep="")
+  out = "raw/"
+  cmd = paste("java -Xms2G -Xmx12G -jar sbcl.jar",o1,o2,pc1,pc2,id1,id2,out)
+  
+  exported = paste("raw/data_ci_",id1,"_",id2,".csv",sep="")
+  if(!file.exists(exported)) {
+    print(cmd)
+    system(cmd, intern = TRUE)
+  }
+}
+```
+
+```{r load_sbcls}
+df_sbcl_b_raw = get_csv("ci")
+df_sbcl_b<-df_sbcl_b_raw
+df_sbcl_b[,sbcl:=TRUE]
+nrow(df_sbcl_b)
+df_sbcl_b_thing = df_sbcl_b[c_super=="http://www.w3.org/2002/07/owl#Thing",]
+df_sbcl_b_thing[,thing:=TRUE]
+df_sbcl_b = df_sbcl_b[c_super!="http://www.w3.org/2002/07/owl#Thing",]
+df_sbcl_b[,c_super_id:=ifelse(df_sbcl_b$gen,label,c_super)]
+df_sbcl_b<-add_superclassimpact_all(df_sbcl_b)
+df_sbcl_b$cid<-apply(cbind(df_sbcl_b$o1, df_sbcl_b$o2), 1, function(x) paste(sort(x), collapse="-"))
+nrow(df_sbcl_b)
+```
+
+
+## Compute alignment candidates
+
+```{r alignments}
+df_a_behaviour<-get_alignments("behaviou?r",df_labels = df_labels, df_classes)
+df_a_behaviour[,o1:=as.character(o1)]
+df_a_behaviour[,o2:=as.character(o2)]
+df_a_behaviour$cid<-apply(cbind(df_a_behaviour$o1, df_a_behaviour
+                                $o2), 1, function(x) paste(sort(x), collapse="-"))
+df_a_behaviour[,iri1:=as.character(iri1)]
+df_a_behaviour[,iri2:=as.character(iri2)]
+#df_a_bone<-get_alignments("bone",df_labels = df_labels, df_classes)
+#head(df_a_bone[order(df_a_bone$lv),])
+#nrow(df_a_bone)
+```
+
+```{r}
+df_a_behaviour_x_raw<-semantic_integration(df = df_a_behaviour, df_sbcl_b)
+df_a_behaviour_x<-df_a_behaviour_x_raw
+
+# Merge superclasses in
+df_a_behaviour_x<-merge(df_a_behaviour_x,df_sbcl_b[,.(o1,o2,entity,c_super_id,sbcl)],by.x = c("o1","o2","iri1","iri2"),by.y = c("o1","o2","entity","c_super_id"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'sbcl'] <- 'sbcl12'
+df_a_behaviour_x<-merge(df_a_behaviour_x,df_sbcl_b[,.(o1,o2,entity,c_super_id,sbcl)],by.x = c("o1","o2","iri2","iri1"),by.y = c("o1","o2","entity","c_super_id"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'sbcl'] <- 'sbcl21'
+
+# Add which one is subclass thing, i.e. not UNSAT
+df_a_behaviour_x<-merge(df_a_behaviour_x,df_sbcl_b_thing[,.(o1,o2,entity,thing)],by.x = c("o1","o2","iri1"),by.y = c("o1","o2","entity"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'thing'] <- 'thing1'
+df_a_behaviour_x<-merge(df_a_behaviour_x,df_sbcl_b_thing[,.(o1,o2,entity,thing)],by.x = c("o1","o2","iri2"),by.y = c("o1","o2","entity"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'thing'] <- 'thing2'
+nrow(df_a_behaviour_x)
+
+# Add in definitions.
+# TODO REMOVE DUPLICATE DEFINITIONS
+df_a_behaviour_x<-merge(df_a_behaviour_x,unique(df_definitions[,.(iri,pattern)]),by.x = c("iri1"),by.y = c("iri"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'pattern'] <- 'def1'
+df_a_behaviour_x<-merge(df_a_behaviour_x,unique(df_definitions[,.(iri,pattern)]),by.x = c("iri2"),by.y = c("iri"),all.x = TRUE)
+names(df_a_behaviour_x)[names(df_a_behaviour_x) == 'pattern'] <- 'def2'
+nrow(df_a_behaviour_x)
+
+df_a_behaviour_x[is.na(sbcl12),sbcl12:=FALSE]
+df_a_behaviour_x[is.na(sbcl21),sbcl21:=FALSE]
+df_a_behaviour_x[is.na(thing1),thing1:=FALSE]
+df_a_behaviour_x[is.na(thing2),thing2:=FALSE]
+df_a_behaviour_x[,bothsat:=(thing1&thing2)]
+df_a_behaviour_x[,sbcl:=(sbcl12|sbcl21)]
+nrow(df_a_behaviour_x)
+
+df_a_behaviour_x$lendiff<-abs(str_length(df_a_behaviour_x$Var1)-str_length(df_a_behaviour_x$Var2))
+same<-df_a_behaviour_x[iri1==iri2,]
+diff_behaviour = df_a_behaviour_x[iri1!=iri2&bothsat&sbcl==FALSE,]
+x_eq_df_behaviour_x<-diff_behaviour[diff_behaviour$lv<=2,]
+x_lv100_df_behaviour_x<-diff_behaviour[diff_behaviour$lv>30&x$lendiff<10,]
+nrow(x_eq_df_behaviour_x)
+nrow(x_lv100_df_behaviour_x)
+write.csv(x_eq_df_behaviour_x,file = "alignment_lv_st2_behaviour.csv")
+write.csv(x_lv100_df_behaviour_x,file = "alignment_lv_gt30_behaviour.csv")
+View(head(x_eq_df_behaviour_x[order(-x_eq_df_behaviour_x$jacc_all),],200))   
+View(head(x_lv100_df_behaviour_x[order(-x_lv100_df_behaviour_x$jacc_all),],200))  
+
+#TODO: remove all cases where classes are in subclass relation (or equivalent)
+
+#df_a_behaviour_x[,o1:=as.character(o1)]
+#df_a_behaviour_x[,o2:=as.character(o2)]
+#df_a_behaviour_x[,iri1:=as.character(iri1)]
+#df_a_behaviour_x[,iri2:=as.character(iri2)]
+
+head(df_sbcl_b[entity=="http://purl.obolibrary.org/obo/HP_0040202",])
+
+```
+
+```{r integrationindicator}
+integration_index<-diff_behaviour[lv<10,list(mc=mean(jacc_all),mi=mean(ic_all),len=length(jacc_all)),by=cid]
+View(integration_index)
+View(head(setorder(diff_behaviour[cid=="efo-hp",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="diab-hp",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="hp-mp",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="hord-ordo",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="diab-efo",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="efo-mp",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="fbcv-nbo",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="efo-hord",],-jacc_all)))
+View(head(setorder(diff_behaviour[cid=="efo-ordo",],-jacc_all)))
+
+```
+
+```{r}
+ggplot(df_a_behaviour_x[df_a_behaviour_x$jacc_all>0.5,],aes(lv,jacc_all)) + geom_point() + geom_smooth()
+```
