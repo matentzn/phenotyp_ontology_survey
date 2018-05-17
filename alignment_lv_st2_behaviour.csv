@@ -1,0 +1,173 @@
+"","iri2","iri1","o1","o2","Var1","Var2","jw","dl","lv","eq","jacc_all","jacc_c","sup_int_size_all","sup_int_size_c","ic_c","ic_all","sbcl12","sbcl21","thing1","thing2","def1","def2","bothsat","sbcl","lendiff"
+"1","http://purl.bioontology.org/ontology/REPO.owl#FemaleSexualBehavior","http://opendata.inra.fr/ATOL/ATOL_0000979","atol","repo","female sexual behavior","female sexual behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"2","http://purl.bioontology.org/ontology/REPO.owl#FemaleSexualBehavior","http://opendata.inra.fr/ATOL/ATOL_0001785","atol","repo","male sexual behavior","female sexual behavior",0.146969696969697,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,2
+"3","http://purl.bioontology.org/ontology/REPO.owl#FlehmenBehavior","http://opendata.inra.fr/ATOL/ATOL_0001715","atol","repo","flehmen behavior","flehmen behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"4","http://purl.bioontology.org/ontology/REPO.owl#MatingBehavior","http://opendata.inra.fr/ATOL/ATOL_0000354","atol","repo","mating behavior","mating behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"5","http://purl.bioontology.org/ontology/REPO.owl#MatingBehavior","http://opendata.inra.fr/ATOL/ATOL_0000354","atol","repo","mating behavior","mating behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"6","http://purl.bioontology.org/ontology/REPO.owl#MatingBehavior","http://opendata.inra.fr/ATOL/ATOL_0000877","atol","repo","laying behavior","mating behavior",0.0888888888888889,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"7","http://purl.bioontology.org/ontology/REPO.owl#MountingBehavior","http://opendata.inra.fr/ATOL/ATOL_0001716","atol","repo","mounting behavior","mounting behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"8","http://purl.bioontology.org/ontology/REPO.owl#ReproductiveBehavior","http://opendata.inra.fr/ATOL/ATOL_0000894","atol","repo","reproductive behavior","reproductive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"9","http://purl.bioontology.org/ontology/REPO.owl#ReproductiveBehavior","http://opendata.inra.fr/ATOL/ATOL_0000894","atol","repo","reproductive behavior","reproductive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"10","http://purl.obolibrary.org/obo/GO_0007610","http://purl.obolibrary.org/obo/FBcv_0000387","fbcv","go","behavioral","behavior",0.0666666666666668,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'quality'  
+ and ('inheres_in' some 'behavior')  
+ and ('qualifier' some 'abnormal')",NA,TRUE,FALSE,2
+"11","http://purl.obolibrary.org/obo/GO_0007610","http://purl.obolibrary.org/obo/FBcv_0000387","fbcv","go","behavioral","behavior",0.0666666666666668,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'quality'  
+ and ('inheres_in' some 'behavior')  
+ and ('qualifier' some 'abnormal')",NA,TRUE,FALSE,2
+"12","http://purl.obolibrary.org/obo/HP_0000718","http://opendata.inra.fr/ATOL/ATOL_0000813","atol","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"13","http://purl.obolibrary.org/obo/HP_0000718","http://opendata.inra.fr/ATOL/ATOL_0000813","atol","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"14","http://purl.obolibrary.org/obo/HP_0000718","http://opendata.inra.fr/ATOL/ATOL_0000813","atol","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"15","http://purl.obolibrary.org/obo/HP_0000718","http://opendata.inra.fr/ATOL/ATOL_0000813","atol","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"16","http://purl.obolibrary.org/obo/HP_0000718","http://purl.obolibrary.org/obo/GO_0002118","go","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"17","http://purl.obolibrary.org/obo/HP_0000718","http://purl.obolibrary.org/obo/GO_0002118","go","hp","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"18","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"19","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"20","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"21","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"22","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotyped behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"23","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotyped behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"24","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","stereotyped behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"25","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","stereotyped behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"26","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotypic behaviors",0.0158730158730158,1,1,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,1
+"27","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotypic behavior","stereotypic behaviors",0.0158730158730158,1,1,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,1
+"28","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","sterotyped behavior",0.0956140350877193,1,1,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,1
+"29","http://purl.obolibrary.org/obo/HP_0000733","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","hp","stereotyped behavior","sterotyped behavior",0.0956140350877193,1,1,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,1
+"30","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"31","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"32","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"33","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"34","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"35","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"36","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"37","http://purl.obolibrary.org/obo/MP_0001408","http://opendata.inra.fr/ATOL/ATOL_0000852","atol","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"38","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"39","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"40","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotypic behaviors","stereotypic behavior",0.0158730158730158,1,1,FALSE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,1
+"41","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotypic behavior","stereotypic behavior",0,0,0,TRUE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"42","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotyped behavior","stereotypic behavior",0.112962962962963,2,2,FALSE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"43","http://purl.obolibrary.org/obo/MP_0001408","http://purl.obolibrary.org/obo/HP_0000733","hp","mp","stereotypic behaviors","stereotypic behavior",0.0158730158730158,1,1,FALSE,0.526315789473684,0.523809523809524,20,11,0.00608090780262886,0.010527031868409,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'stereotypic behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,1
+"44","http://purl.obolibrary.org/obo/MP_0002065","http://purl.obolibrary.org/obo/HP_0100852","diab","mp","abnormal fear/anxiety-related behavior","abnormal fear/anxiety-related behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'fear/anxiety related behavior')  
+     and ('has modifier' some 'abnormal'))","'has part' some   
+    ('quality'  
+     and ('inheres in' some 'fear/anxiety related behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"45","http://purl.obolibrary.org/obo/MP_0002065","http://purl.obolibrary.org/obo/HP_0100852","diab","mp","abnormal fear/anxiety-related behavior","abnormal fear/anxiety-related behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'fear/anxiety related behavior')  
+     and ('has modifier' some 'abnormal'))","'has part' some   
+    ('quality'  
+     and ('inheres in' some 'fear/anxiety related behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"46","http://purl.obolibrary.org/obo/MP_0002069","http://purl.obolibrary.org/obo/HP_0040202","hp","mp","abnormal consumption behavior","abnormal consumption behavior",0,0,0,TRUE,0.818181818181818,0.833333333333333,18,10,0.00417976711821822,0.00672475049958771,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'consumption behavior')  
+     and ('has modifier' some 'abnormal'))","'has part' some   
+    ('quality'  
+     and ('inheres in' some 'feeding behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"47","http://purl.obolibrary.org/obo/MP_0002069","http://purl.obolibrary.org/obo/HP_0040202","hp","mp","abnormal consumption behavior","abnormal consumption behavior",0,0,0,TRUE,0.818181818181818,0.833333333333333,18,10,0.00417976711821822,0.00672475049958771,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'consumption behavior')  
+     and ('has modifier' some 'abnormal'))","'has part' some   
+    ('quality'  
+     and ('inheres in' some 'feeding behavior')  
+     and ('has modifier' some 'abnormal'))",TRUE,FALSE,0
+"48","http://purl.obolibrary.org/obo/VT_0002068","http://purl.obolibrary.org/obo/MP_0002068","mp","vt","neurological/behavioral: parental behavior anomalies","neurological/behavioral: parental behavior anomalies",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'parental behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"49","http://purl.obolibrary.org/obo/VT_0002068","http://purl.obolibrary.org/obo/MP_0002068","mp","vt","neurological/behavioral: parental behavior anomalies","neurological/behavioral: parental behavior anomalies",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'parental behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"50","http://purl.obolibrary.org/obo/VT_0002557","http://purl.obolibrary.org/obo/GO_0035176","go","vt","social behavior","social behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"51","http://purl.obolibrary.org/obo/VT_0002557","http://purl.obolibrary.org/obo/GO_0035176","go","vt","social behavior","social behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"52","http://purl.obolibrary.org/obo/VT_0010442","http://opendata.inra.fr/ATOL/ATOL_0000522","atol","vt","behavior trait","behavior trait",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"53","http://purl.obolibrary.org/obo/VT_0010442","http://opendata.inra.fr/ATOL/ATOL_0000522","atol","vt","behavior trait","behavior trait",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"54","http://www.gamuts.net/entity#aggressive_behavior","http://purl.obolibrary.org/obo/HP_0000718","diab","gamuts","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"55","http://www.gamuts.net/entity#aggressive_behavior","http://purl.obolibrary.org/obo/HP_0000718","diab","gamuts","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('quality'  
+     and ('inheres in' some 'aggressive behavior')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
+"56","http://www.gamuts.net/entity#aggressive_behavior","http://purl.org/obo/owl/HP#HP_0000718","bdo","gamuts","aggressive behavior","aggressive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,NA,NA,TRUE,FALSE,0
+"57","http://www.semanticweb.org/ontologies/2012/5/Ontology1338526551855.owl#Hyperactive_behavior","http://purl.obolibrary.org/obo/HP_0000752","hp","rpo","hyperactive behavior","hyperactive behavior",0,0,0,TRUE,0,0,0,0,0,0,FALSE,FALSE,TRUE,TRUE,"'has part' some   
+    ('increased amount'  
+     and ('inheres in' some 'hyperactivity')  
+     and ('has modifier' some 'abnormal'))",NA,TRUE,FALSE,0
